@@ -149,7 +149,7 @@ for i, met in enumerate(met_cols):
         if np.isfinite(slope) and np.isfinite(intercept):
             x_line = np.linspace(x.min(), x.max(), 200)
             y_line = slope * x_line + intercept
-            ax.plot(x_line, y_line, linewidth=2, label="линейная регрессия")
+            ax.plot(x_line, y_line, linewidth=2, color='red', label="линейная регрессия")
 
             if show_ci:
                 y_low, y_high = ci_band(x.values, y.values, slope, intercept)
