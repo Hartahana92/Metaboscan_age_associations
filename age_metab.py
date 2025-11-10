@@ -13,6 +13,16 @@ try:
 except Exception:
     SCIPY_OK = False
 
+def fig_to_download_button(fig, filename="plot.png", label="📥 Скачать график (300 dpi)"):
+    """Создает download-кнопку для matplotlib-фигуры в формате PNG 300 dpi."""
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", dpi=300, bbox_inches="tight")
+    st.download_button(
+        label=label,
+        data=buf.getvalue(),
+        file_name=filename,
+        mime="image/png",
+    )
 st.set_page_config(page_title="Метаболит vs Возраст", layout="wide")
 st.title("Зависимость концентрации метаболита от возраста и агрегированные тренды")
 
@@ -182,6 +192,7 @@ for met in met_cols:
     #ax.set_title(f"{met} vs {age_col} — {title}")
     ax.legend(fontsize=7, loc="best")
     st.pyplot(fig)
+    fig_to_download_button(fig, filename=f"{met}_regression.png")
 
     # === ГРАФИК 2: агрегированные средние по возрасту для ЭТОГО метаболита ===
     df_agg = df_work[[age_col, met] + ([sex_col] if sex_col else [])].dropna()
@@ -220,3 +231,5 @@ for met in met_cols:
     ax2.grid(True, alpha=0.3)
     ax2.legend(fontsize=7, loc="best")
     st.pyplot(fig2)
+    fig_to_download_button(fig2, filename=f"{met}_aggregate.png")
+
