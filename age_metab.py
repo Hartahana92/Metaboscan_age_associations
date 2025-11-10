@@ -149,18 +149,28 @@ for i, met in enumerate(met_cols):
         if np.isfinite(slope) and np.isfinite(intercept):
             x_line = np.linspace(x.min(), x.max(), 200)
             y_line = slope * x_line + intercept
-            ax.plot(x_line, y_line, linewidth=2, color='red', label="линейная регрессия")
+            # Остатки и стандартная ошибка регрессии
             y_pred = slope * x + intercept
             residuals = y - y_pred
-            sd = np.nanstd(residuals)
-            ax.fill_between(
-                x_line,
-                y_line - sd,
-                y_line + sd,
-                color='red',
-                alpha=0.2,
-                label='±1 SD'
-            )
+            n = len(x)
+            s_err = np.sqrt(np.sum(residuals**2) / (n - 2))
+            x_mean = np.mean(x)    
+            s_pred = s_err * np.sqrt(1 + 1/n + (x_line - x_mean)**2 / np.sum((x - x_mean)**2))
+
+            ax.plot(x_line, y_line, linewidth=2, color='red', label="линейная регрессия")
+            ax.fill_between(x_line, y_line - s_pred, y_line + s_pred,
+                    color='red', alpha=0.2, label='±1 SD (variable width)')
+            #y_pred = slope * x + intercept
+            #residuals = y - y_pred
+            #sd = np.nanstd(residuals)
+            #ax.fill_between(
+            #    x_line,
+            #    y_line - sd,
+            #    y_line + sd,
+            #    color='red',
+            #    alpha=0.2,
+            #    label='±1 SD'
+            #)
             
             if show_ci:
                 y_low, y_high = ci_band(x.values, y.values, slope, intercept)
