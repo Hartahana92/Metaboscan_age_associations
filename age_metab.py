@@ -149,17 +149,27 @@ for i, met in enumerate(met_cols):
         if np.isfinite(slope) and np.isfinite(intercept):
             x_line = np.linspace(x.min(), x.max(), 200)
             y_line = slope * x_line + intercept
-            # Остатки и стандартная ошибка регрессии
-            y_pred = slope * x + intercept
-            residuals = y - y_pred
-            n = len(x)
-            s_err = np.sqrt(np.sum(residuals**2) / (n - 2))
-            x_mean = np.mean(x)    
-            s_pred = s_err * np.sqrt(1 + 1/n + (x_line - x_mean)**2 / np.sum((x - x_mean)**2))
+
 
             ax.plot(x_line, y_line, linewidth=2, color='red', label="линейная регрессия")
-            ax.fill_between(x_line, y_line - s_pred, y_line + s_pred,
-                    color='red', alpha=0.2, label='±1 SD (variable width)')
+            # 🔹 Локальный SD по окну
+            df_temp = pd.DataFrame({"x": x, "y": y})
+            df_temp = df_temp.sort_values("x")
+            window = 10   # ширина окна в летах
+            sd_values = []
+            for xv in x_line:
+                mask = (df_temp["x"] >= xv - window/2) & (df_temp["x"] <= xv + window/2)
+                y_local = df_temp.loc[mask, "y"]
+                sd_values.append(y_local.std() if len(y_local) > 3 else np.nan)
+
+            sd_values = np.array(sd_values)
+
+            ax.fill_between(
+                x_line,
+                y_line - sd_values,
+                y_line + sd_values,
+                color='red', alpha=0.25, label='±1 SD (локальный)'
+            )
             
             if show_ci:
                 y_low, y_high = ci_band(x.values, y.values, slope, intercept)
@@ -172,7 +182,7 @@ for i, met in enumerate(met_cols):
         ax.set_xlabel("Возраст")
         ax.set_ylabel(f"{'log10(' + met + ')' if log_y else met}")
         ax.grid(True, alpha=0.25)
-
+    
         # заголовок с метриками
         title_parts = [f"{met} vs {age_col}", f"R² = {r2:.3f}" if np.isfinite(r2) else "R²: n/a"]
         if np.isfinite(slope) and np.isfinite(intercept):
