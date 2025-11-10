@@ -149,7 +149,7 @@ for met in met_cols:
     # === ГРАФИК 1: scatter + регрессия ===
     slope, intercept, r, r2, pvalue = linreg_stats(x.values, y.values)
 
-    fig, ax = plt.subplots(figsize=(7, 4))
+    fig, ax = plt.subplots(figsize=(6, 3))
     ax.scatter(x, y, alpha=0.6, label="наблюдения")
 
     if np.isfinite(slope) and np.isfinite(intercept):
@@ -195,7 +195,7 @@ for met in met_cols:
 
     mean_all, sd_all = mean_sd_by_age(df_agg, met, bin_years)
 
-    fig2, ax2 = plt.subplots(figsize=(7, 4))
+    fig2, ax2 = plt.subplots(figsize=(6, 3))
     ax2.plot(mean_all.index, mean_all.values, linewidth=2, color="black", label="Среднее (все)")
     if show_sd_band and sd_all.notna().any():
         ax2.fill_between(mean_all.index, (mean_all - sd_all).values, (mean_all + sd_all).values,
