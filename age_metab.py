@@ -160,17 +160,6 @@ for i, met in enumerate(met_cols):
             ax.plot(x_line, y_line, linewidth=2, color='red', label="линейная регрессия")
             ax.fill_between(x_line, y_line - s_pred, y_line + s_pred,
                     color='red', alpha=0.2, label='±1 SD (variable width)')
-            #y_pred = slope * x + intercept
-            #residuals = y - y_pred
-            #sd = np.nanstd(residuals)
-            #ax.fill_between(
-            #    x_line,
-            #    y_line - sd,
-            #    y_line + sd,
-            #    color='red',
-            #    alpha=0.2,
-            #    label='±1 SD'
-            #)
             
             if show_ci:
                 y_low, y_high = ci_band(x.values, y.values, slope, intercept)
