@@ -150,7 +150,18 @@ for i, met in enumerate(met_cols):
             x_line = np.linspace(x.min(), x.max(), 200)
             y_line = slope * x_line + intercept
             ax.plot(x_line, y_line, linewidth=2, color='red', label="линейная регрессия")
-
+            y_pred = slope * x + intercept
+            residuals = y - y_pred
+            sd = np.nanstd(residuals)
+            ax.fill_between(
+                x_line,
+                y_line - sd,
+                y_line + sd,
+                color='red',
+                alpha=0.2,
+                label='±1 SD'
+            )
+            
             if show_ci:
                 y_low, y_high = ci_band(x.values, y.values, slope, intercept)
                 if y_low is not None:
