@@ -179,8 +179,8 @@ for met in met_cols:
         title += f" | r={r:.3f}"
     if np.isfinite(pvalue):
         title += f" | p={pvalue:.3g}"
-    ax.set_title(f"{met} vs {age_col} — {title}")
-    ax.legend(loc="best")
+    #ax.set_title(f"{met} vs {age_col} — {title}")
+    ax.legend(fontsize=7, loc="best")
     st.pyplot(fig)
 
     # === ГРАФИК 2: агрегированные средние по возрасту для ЭТОГО метаболита ===
@@ -218,5 +218,5 @@ for met in met_cols:
     ax2.set_xlabel("Возраст, лет")
     ax2.set_ylabel(f"{'log10(' + met + ')' if log_y else met}")
     ax2.grid(True, alpha=0.3)
-    ax2.legend(loc="best")
+    ax2.legend(fontsize=7, loc="best")
     st.pyplot(fig2)
